@@ -3,14 +3,13 @@
 
 #include <avr/pgmspace.h>
 
-
-#define IIC_STATUS_OK 0x00
-#define IIC_STATUS_ERROR_START 0x10
-#define IIC_STATUS_ERROR_ADDR  0x20
-#define IIC_STATUS_ERROR_WAIT  0x30
-#define IIC_STATUS_ERROR_WRITE 0x40
-#define IIC_STATUS_ERROR_READ  0x50
-#define IIC_STATUS_ERROR_STOP  0x60
+#define IIC_STATUS_OK 0
+#define IIC_STATUS_ERROR_START 1
+#define IIC_STATUS_ERROR_ADDR  2
+#define IIC_STATUS_ERROR_WAIT  3
+#define IIC_STATUS_ERROR_WRITE 4
+#define IIC_STATUS_ERROR_READ  5
+#define IIC_STATUS_ERROR_STOP  6
 
 void iic_init();
 unsigned char iic_status();
