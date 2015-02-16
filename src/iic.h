@@ -15,9 +15,11 @@ void iic_init();
 unsigned char iic_status();
 prog_char* iic_status_message(unsigned char status);
 void iic_clear();
-void iic_set_addres(unsigned char adr);
-unsigned char iic_get_addres();
+void iic_set_address(unsigned char adr);
+unsigned char iic_get_address();
 void iic_write(unsigned char data);
 unsigned char iic_read();
+void iic_write_read(unsigned char write[], unsigned char wSz,
+                unsigned char read[], unsigned char rSz);
 
 #endif // IIC_H_
