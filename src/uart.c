@@ -1,12 +1,7 @@
-/**
- *
- */
-
 #include <avr/io.h>
-#include <inttypes.h>
 #include <avr/pgmspace.h>
 
-/*
+/**
  * Инициализация модуля UART.
  */
 void uart_init()
@@ -44,8 +39,13 @@ void uart_write_string(prog_char* str)
         }
 }
 
+void uart_new_line()
+{
+        uart_write('\n');
+}
+
 void uart_write_line(prog_char* str)
 {
         uart_write_string(str);
-        uart_write('\n');
+        uart_new_line();
 }
