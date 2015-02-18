@@ -1,52 +1,41 @@
 #include <avr/io.h>
-#include <avr/pgmspace.h>
-#include "../uart.h"
+#include <stdio.h>
+
+static int uart_put(char data, FILE *stream);
+static int uart_get(FILE *stream);
+
+static FILE uartOut = FDEV_SETUP_STREAM(uart_put, uart_get, _FDEV_SETUP_WRITE);
+static FILE uartIn = FDEV_SETUP_STREAM(NULL, uart_get, _FDEV_SETUP_READ);
 
 /**
  * Инициализация модуля UART.
  */
 void uart_init()
-{/* Set baud rate */
+{
+        /* Set baud rate */
         UBRRH = (unsigned char) (51 >> 8);
         UBRRL = (unsigned char) 51;
         /* Enable receiver and transmitter */UCSRB = (1 << RXEN) | (1 << TXEN);
         /* Set frame format: 8data, 2stop bit */
         UCSRC = (1 << URSEL) | (1 << USBS) | (3 << UCSZ0);
+        stdout = &uartOut;
+        stderr= &uartOut;
+        stdin= &uartIn;
 }
 
-void uart_write(char data)
+static int uart_put(char data, FILE *stream)
 {
         while (!(UCSRA & (1 << UDRE))) {
                 // TODO timeout
         }
         UDR = data;
+        return 0;
 }
 
-char uart_read()
+static int uart_get(FILE *stream)
 {
         while (!(UCSRA & (1 << RXC))) {
                 // TODO timeout
         }
-        return UDR;
-}
-
-void uart_write_string(prog_char* str)
-{
-        char s;
-        while (1) {
-                s = pgm_read_byte(str++);
-                if (s == 0) break;
-                uart_write(s);
-        }
-}
-
-void uart_new_line()
-{
-        uart_write('\n');
-}
-
-void uart_write_line(prog_char* str)
-{
-        uart_write_string(str);
-        uart_new_line();
+        return (int) UDR & 0xff;
 }
