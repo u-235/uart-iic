@@ -18,8 +18,10 @@ int main(void)
 
         uart_init();
         iic_init();
-        puts_P(PSTR("Nick Egorov 2014 ©®"));
-        puts_P(PSTR("uart to iic adaptor v0.3"));
+        stderr = stdout;
+
+        puts_P(PSTR("Nick Egorov 2014"));
+        puts_P(PSTR("uart to iic adaptor v0.9"));
         print_help();
 
         while (1) {
@@ -33,7 +35,6 @@ int main(void)
 
         return 0;
 }
-
 
 void execute(action_t *act)
 {
@@ -53,20 +54,28 @@ void execute(action_t *act)
 void report(action_t *act)
 {
         if (act->status != IIC_STATUS_OK) {
-                puts_P(iic_status_message(act->status));
+                iic_put_status(stderr);
                 iic_clear();
                 return;
         }
 
         if (act->addrFlags == ACTION_ADDRESS_GET) {
-                printf_P(PSTR("address = %x\n"), act->address);
+                printf_P(PSTR("get address = %#02.2x\n"), act->address);
+        }
+
+        if (act->addrFlags == ACTION_ADDRESS_SET) {
+                printf_P(PSTR("set address = %#02.2x\n"), act->address);
+        }
+
+        if (act->writeSize != 0) {
+                printf_P(PSTR("write %i bytes\n"), act->writeSize);
         }
 
         if (act->readSize != 0) {
-                unsigned char * buff = act->buff;
-                puts_P(PSTR("read"));
+                unsigned char *buff = act->buff;
+                printf_P(PSTR("read %i bytes\n"), act->readSize);
                 for (unsigned int c = 0; c < act->readSize; c++) {
-                        printf_P(PSTR(" %x"), *buff++);
+                        printf_P(PSTR(" %#02.2x"), *buff++);
                 }
                 putchar('\n');
         }
@@ -75,4 +84,5 @@ void report(action_t *act)
 void print_help()
 {
         puts_P(PSTR("Usage:"));
+        puts_P(PSTR(""));
 }

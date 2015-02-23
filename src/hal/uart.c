@@ -4,7 +4,7 @@
 static int uart_put(char data, FILE *stream);
 static int uart_get(FILE *stream);
 
-static FILE uartOut = FDEV_SETUP_STREAM(uart_put, uart_get, _FDEV_SETUP_WRITE);
+static FILE uartOut = FDEV_SETUP_STREAM(uart_put, NULL, _FDEV_SETUP_WRITE);
 static FILE uartIn = FDEV_SETUP_STREAM(NULL, uart_get, _FDEV_SETUP_READ);
 
 /**
@@ -19,8 +19,7 @@ void uart_init()
         /* Set frame format: 8data, 2stop bit */
         UCSRC = (1 << URSEL) | (1 << USBS) | (3 << UCSZ0);
         stdout = &uartOut;
-        stderr= &uartOut;
-        stdin= &uartIn;
+        stdin = &uartIn;
 }
 
 static int uart_put(char data, FILE *stream)
@@ -34,8 +33,16 @@ static int uart_put(char data, FILE *stream)
 
 static int uart_get(FILE *stream)
 {
+        int result;
+
         while (!(UCSRA & (1 << RXC))) {
                 // TODO timeout
         }
-        return (int) UDR & 0xff;
+        result = (int) UDR & 0xff;
+
+        if (result == '\r') {
+                result = uart_get(stream);
+        }
+
+        return result;
 }
