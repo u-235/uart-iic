@@ -21,12 +21,13 @@ int main(void)
         stderr = stdout;
 
         puts_P(PSTR("Nick Egorov 2014"));
-        puts_P(PSTR("uart to iic adaptor v0.9"));
+        puts_P(PSTR("uart to iic adaptor v1.0"));
         print_help();
 
         while (1) {
                 fgets(buff, INPUT_BUFFER_SIZE, stdin);
                 if (cmd_parse(buff, &act) != 0) {
+                        print_help();
                         continue;
                 }
                 execute(&act);
@@ -83,6 +84,14 @@ void report(action_t *act)
 
 void print_help()
 {
-        puts_P(PSTR("Usage:"));
-        puts_P(PSTR(""));
+        puts_P(PSTR("\nUsage:"));
+        puts_P(PSTR("[a [int]] [w int {int}] [r int]"));
+        puts_P(PSTR("  a [int] - get or set address"));
+        puts_P(PSTR("  w int {int} - write byte(s)"));
+        puts_P(PSTR("  r int - read int byte"));
+        puts_P(PSTR("  int - unsigned integer in range from 0 to 255 as:"));
+        puts_P(PSTR("    0b01011 - binary"));
+        puts_P(PSTR("    072     - octal"));
+        puts_P(PSTR("    221     - decimal"));
+        puts_P(PSTR("    0xa9    - hex\n"));
 }

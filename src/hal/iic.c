@@ -12,11 +12,11 @@
         {\
                 for(unsigned char c = 0; !(TWCR & (1<<TWINT)); c++)\
                 {\
-                        if (c > 127){\
+                        if (c > 200){\
                                 status |= IIC_STATUS_ERROR_WAIT;\
                                 break;\
                         }\
-                        _delay_ms(10);\
+                        _delay_ms(1);\
                 }\
         }
 
@@ -28,11 +28,11 @@
                 TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWSTO);\
                 for (unsigned char c = 0; TWCR & (1<<TWSTO); c++)\
                 {\
-                        if (c > 127){\
+                        if (c > 200){\
                                 status |= IIC_STATUS_ERROR_STOP;\
                                 break;\
                         }\
-                        _delay_ms(10);\
+                        _delay_ms(1);\
                 }\
         }
 

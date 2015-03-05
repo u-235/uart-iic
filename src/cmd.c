@@ -10,6 +10,8 @@
 #define STATE_R_F 4
 #define STATE_W 5
 #define STATE_W_F 6
+#define STATE_R_F_D 7
+#define STATE_A_F_D 8
 
 #define ERROR_OK 0
 #define ERROR_EXPECT_AWR 1
@@ -80,7 +82,20 @@ int cmd_parse(char *str, action_t *act)
                                 if (result == ERROR_OK) {
                                         act->addrFlags = ACTION_ADDRESS_SET;
                                 }
+                                state = STATE_A_F_D;
                         } else if (inf.sym == 'R' || inf.sym == 'r') {
+                                state = STATE_R;
+                        } else if (inf.sym == 'W' || inf.sym == 'w') {
+                                state = STATE_W;
+                        } else if (inf.sym > 0 && inf.sym <= ' ') {
+                                // nop
+                        } else {
+                                result = ERROR_EXPECT_RW_D;
+                        }
+                        next(&inf);
+                        break;
+                case STATE_A_F_D:
+                        if (inf.sym == 'R' || inf.sym == 'r') {
                                 state = STATE_R;
                         } else if (inf.sym == 'W' || inf.sym == 'w') {
                                 state = STATE_W;
@@ -111,8 +126,16 @@ int cmd_parse(char *str, action_t *act)
                                 if (result == ERROR_OK) {
                                         act->readSize = (unsigned int) r;
                                 }
+                                state = STATE_R_F_D;
                         } else {
                                 result = ERROR_EXPECT_DIGIT;
+                        }
+                        break;
+                case STATE_R_F_D:
+                        if (inf.sym > 0 && inf.sym <= ' ') {
+                                next(&inf);
+                        } else {
+                                result = ERROR_EXPECT_WHITE;
                         }
                         break;
                 case STATE_W:
