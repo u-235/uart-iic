@@ -8,10 +8,10 @@
 
 typedef struct _action {
         unsigned char status;
-        unsigned char addrFlags; //! #ACTION_ADDRESS_GET or #ACTION_ADDRESS_SET
+        unsigned char addrFlags; //!< #ACTION_ADDRESS_GET or #ACTION_ADDRESS_SET
         unsigned char address;
-        unsigned int writeSize;  //! If zero, then no write
-        unsigned int readSize;   //! If zero, then no read
+        unsigned int writeSize;  //!< If zero, then no write
+        unsigned int readSize;   //!< If zero, then no read
         unsigned char buff[ACTION_BUFFER_SIZE];
 } action_t;
 
